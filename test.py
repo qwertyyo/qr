@@ -2,7 +2,7 @@
 
 import os
 import sys
-import datetime
+import datetime as dt
 from time import sleep
 from random import randint
 import requests
@@ -50,10 +50,31 @@ def run():
 
     driver.implicitly_wait(10)
 
+    driver.find_element_by_xpath('//*[@id="search-form"]/fieldset/div[3]/div/input[2]').click() #원하는 시간대 찾기, 달력클릭
+    driver.implicitly_wait(10)
+    driver.switch_to.frame("_LAYER_BODY_")
+    #print(driver.find_element_by_xpath('//*[@id="wrap"]/div[2]/div[1]/div[1]/table/tbody/tr[2]/td[5]').get_attribute('text')) #달력 표의 값을 출력해봄
+    d_date = driver.find_elements_by_link_text(format(dpt_date))
+    print(d_date)
+   
+    
+
+    if dpt_month == dt.datetime.now().month:
+        d_date[0].click()
+    elif dpt_month >= dt.datetime.now().month:
+        d_date[1].click()
+    #driver.execute_script('selectDateInfo(''{}''); return false;'.format(dpt_date))
+
+    driver.implicitly_wait(3)
+
+    driver.switch_to.default_content()
+
+
     driver.find_element_by_xpath('//*[@id="search-form"]/fieldset/a').click() # 객실찾기버튼
 
     
-    #//*[@id="search-form"]/fieldset/div[3]/div/input[1] #원하는 시간대 찾기, 달력클릭
+    
+    
     #원하는 시간 입력
 
     
@@ -63,8 +84,19 @@ def run():
 if __name__ == "__main__":
     dpt = input("출발지 입력 (ex 동탄, 울산, 동대구, 수서, 천안아산) : ")
     arv = input("도착지 입력 - 출발지랑 마찬가지 \n")
-    ppls = input("인원수 입력")
-    #dpt_date = input("날짜 입력. 반드시 2019.12.31 형태 : ")
+    #ppls = input("인원수 입력")
+    #dpt_date = input("날짜입력")
+    while True:
+        dpt_month = int(input("월 입력 : "))
+        print(dt.datetime.now().month)
+        print(dpt_month)
+        if dpt_month < dt.datetime.now().month or dpt_month > dt.datetime.now().month+1:
+            print("예매는 1개월 안에만 가능합니다.")
+        else:
+            break
+
+    dpt_date = int(input("일(date) 입력 : "))
+    print(dpt_date)
     #when = input("열차시간 : ")
 
     run()
